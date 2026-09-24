@@ -2,7 +2,7 @@
   "schema": 1,
   "name": "pytacheck",
   "description": "Community modules and presets for pytacheck (and, in future, metacheck).",
-  "generated": "2026-09-24T20:17:50Z",
+  "generated": "2026-09-24T21:00:27Z",
   "fields": [
     "general",
     "psychology",
@@ -61,7 +61,9 @@
         "only": "Only the trial registration check"
       },
       "source": {
-        "path": "packs/clinical_trials"
+        "github": "thesanogoeffect/pytacheck-modules",
+        "rev": "2e26dc47365890010e66c7f23e60c9e9f715db75",
+        "subdir": "packs/clinical_trials"
       },
       "reviewed": null,
       "yanked": null
@@ -102,7 +104,9 @@
         "open-science": "Transparency: preregistration, open-practice statements and what the shared repositories actually contain (files, code, data, codebooks, Psych-DS)"
       },
       "source": {
-        "path": "packs/fields"
+        "github": "thesanogoeffect/pytacheck-modules",
+        "rev": "2e26dc47365890010e66c7f23e60c9e9f715db75",
+        "subdir": "packs/fields"
       },
       "reviewed": null,
       "yanked": null
