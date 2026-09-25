@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "fields",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "title": "Field presets",
   "description": "Presets that pick metacheck's built-in checks for a field of research. No code: only module lists.",
   "authors": ["pytacheck-modules contributors"],

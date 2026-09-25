@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "clinical_trials",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "title": "Clinical trial checks",
   "description": "Checks for clinical trial reports: finds trial registration numbers from the major registries and flags trials that report none.",
   "authors": ["pytacheck-modules contributors"],

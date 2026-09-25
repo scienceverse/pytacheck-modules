@@ -31,10 +31,17 @@ pytacheck run paper.json -m clinical_trials::trial_registration
 | pack | kind | what it offers |
 |---|---|---|
 | [`fields`](packs/fields) | presets only | `fields::general`, `fields::psychology`, `fields::medicine`, `fields::open-science`: metacheck's checks chosen per field |
-| [`clinical_trials`](packs/clinical_trials) | code | `trial_registration`: trial registry numbers (ClinicalTrials.gov, ISRCTN, EudraCT/CTIS, ANZCTR, ChiCTR, DRKS, CTRI) |
+| [`clinical_trials`](packs/clinical_trials) | code | `trial_registration`: trial registry numbers (ClinicalTrials.gov, ISRCTN, EudraCT/CTIS, ANZCTR, ChiCTR, DRKS, CTRI, PACTR, UMIN/jRCT, IRCT, ReBEC, NTR) |
 
 The full user guide is pytacheck's
 [docs/MODULES.md](https://github.com/thesanogoeffect/pytacheck/blob/claude/pytacheck-metacheck-fork-0x7q73/docs/MODULES.md).
+
+> **While this store is private**, pytacheck needs read access to it: set
+> `PYTACHECK_GITHUB_TOKEN` (or `GH_TOKEN` / `GITHUB_TOKEN`) to a GitHub token that
+> can read this repository, for example
+> `export PYTACHECK_GITHUB_TOKEN=$(gh auth token)`, or configure git credentials
+> for github.com (for example `gh auth setup-git`). The token is sent only to
+> GitHub and is never written to your config, install records or run records.
 
 ## What "reviewed" means
 
@@ -56,7 +63,8 @@ list your own repository (`packs/<name>.json`). See
 
 * `packs/<name>/` -- packs submitted as folders;
 * `packs/<name>.json` -- packs in their authors' repositories (name, source,
-  commit), plus maintainer-only `reviewed` / `yanked` fields;
+  commit), plus maintainer-only `reviewed` / `reviewed_tree_sha256` / `yanked`
+  fields;
 * `store.json` -- the store's name and description;
 * `index.json` -- **generated**: CI runs `pytacheck store build` on every push to
   `main` and commits the result. Do not edit it by hand.
