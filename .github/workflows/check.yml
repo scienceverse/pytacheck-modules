@@ -51,7 +51,7 @@ env:
   # rewritten URL, token included, on the command line of git-remote-https,
   # where every user on the host can read it, and an insteadOf prefix is a
   # plain string prefix, so it would also match other scienceverse/pytacheck*
-  # repositories.
+  # repositories, this one (scienceverse/pytacheck-modules) included.
 
 jobs:
   check:
