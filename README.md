@@ -1,6 +1,6 @@
 # pytacheck-modules
 
-The community store for [pytacheck](https://github.com/thesanogoeffect/pytacheck):
+The community store for [pytacheck](https://github.com/scienceverse/pytacheck):
 **packs** of extra checks ("modules") and **presets** (which checks to run for a
 field), contributed by researchers. pytacheck is the Python port of
 [metacheck](https://github.com/scienceverse/metacheck), which checks research
@@ -13,7 +13,7 @@ nothing here runs until you install a pack.
 ## Browse and install
 
 ```bash
-pip install "pytacheck @ git+https://github.com/thesanogoeffect/pytacheck@claude/pytacheck-metacheck-fork-0x7q73"   # not on PyPI yet
+pip install "pytacheck @ git+https://github.com/scienceverse/pytacheck@claude/pytacheck-metacheck-fork-0x7q73"   # not on PyPI yet
 pytacheck pack search                       # everything in the store
 pytacheck pack search trial --field medicine
 pytacheck pack show clinical_trials         # details, without running any code
@@ -34,7 +34,7 @@ pytacheck run paper.json -m clinical_trials::trial_registration
 | [`clinical_trials`](packs/clinical_trials) | code | `trial_registration`: trial registry numbers (ClinicalTrials.gov, ISRCTN, EudraCT/CTIS, ANZCTR, ChiCTR, DRKS, CTRI, PACTR, UMIN/jRCT, IRCT, ReBEC, NTR) |
 
 The full user guide is pytacheck's
-[docs/MODULES.md](https://github.com/thesanogoeffect/pytacheck/blob/claude/pytacheck-metacheck-fork-0x7q73/docs/MODULES.md).
+[docs/MODULES.md](https://github.com/scienceverse/pytacheck/blob/claude/pytacheck-metacheck-fork-0x7q73/docs/MODULES.md).
 
 > **While this store is private**, pytacheck needs read access to it: set
 > `PYTACHECK_GITHUB_TOKEN` (or `GH_TOKEN` / `GITHUB_TOKEN`) to a GitHub token that
