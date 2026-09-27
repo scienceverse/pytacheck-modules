@@ -9,11 +9,11 @@
 # this repository.
 #
 # The runner keeps its state between jobs (workspace, home directory, caches),
-# so nothing here writes the runner user's global config or home: the token for
+# so nothing here writes the runner user's global config: the token for
 # pytacheck's repository reaches git only through the environment of the one
 # step per job that fetches pytacheck, and uv's tools and pytacheck's cache and
 # data live in the job's RUNNER_TEMP, which is emptied before and after every
-# job.
+# job. (uv's download cache and its Pythons stay in the runner user's home.)
 name: store
 
 on:
@@ -34,17 +34,24 @@ concurrency:
 env:
   # pytacheck is not on PyPI yet, so CI installs its development branch.
   # Switch to "pytacheck" once it is released.
-  PYTACHECK_SPEC: "pytacheck @ git+https://github.com/thesanogoeffect/pytacheck@claude/pytacheck-metacheck-fork-0x7q73"
+  # Its canonical URL, not the redirect from thesanogoeffect/pytacheck: that
+  # stops the day a repository of that name exists again (a fork, say).
+  PYTACHECK_SPEC: "pytacheck @ git+https://github.com/scienceverse/pytacheck@claude/pytacheck-metacheck-fork-0x7q73"
   PYTACHECK_CONFIG: none # ignore any user config: CI sees only the store
   # While pytacheck's repository is private, CI needs a token that can read it:
-  # a fine-grained PAT with "Contents: read" on thesanogoeffect/pytacheck, saved
-  # as the repository secret PYTACHECK_READ_TOKEN. Not needed once it is public.
+  # a fine-grained PAT with resource owner scienceverse and "Contents: read" on
+  # scienceverse/pytacheck only, saved as this repository's secret
+  # PYTACHECK_READ_TOKEN. Only a member of scienceverse can make one (such PATs
+  # do not work for outside collaborators); if the organization requires
+  # approval, it reads no private repository until an owner approves it; and it
+  # expires, so renew the secret before then. Not needed once pytacheck is public.
   # Only the "Install pytacheck" steps see it: they hand it to git as an HTTP
   # header scoped to exactly that repository, through GIT_CONFIG_* variables in
   # the step's own environment. Not as a url.insteadOf rewrite: git passes the
   # rewritten URL, token included, on the command line of git-remote-https,
-  # where every user on the host can read it, and an insteadOf prefix also
-  # matches this repository (thesanogoeffect/pytacheck-modules).
+  # where every user on the host can read it, and an insteadOf prefix is a
+  # plain string prefix, so it would also match other scienceverse/pytacheck*
+  # repositories.
 
 jobs:
   check:
@@ -83,10 +90,17 @@ jobs:
             auth=$(printf 'x-access-token:%s' "$PYTACHECK_READ_TOKEN" | base64 -w0)
             echo "::add-mask::$auth"
             export GIT_CONFIG_COUNT=1
-            export GIT_CONFIG_KEY_0=http.https://github.com/thesanogoeffect/pytacheck.extraheader
+            export GIT_CONFIG_KEY_0=http.https://github.com/scienceverse/pytacheck.extraheader
             export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth"
           fi
-          uv tool install --with pytest "$PYTACHECK_SPEC"
+          uv tool install --with pytest "$PYTACHECK_SPEC" || {
+            if [ -z "$PYTACHECK_READ_TOKEN" ]; then
+              echo "::error::installing pytacheck failed, and the PYTACHECK_READ_TOKEN secret is not set: CI needs it while pytacheck's repository is private (see the comment above PYTACHECK_SPEC in this workflow)"
+            else
+              echo "::error::installing pytacheck failed. If git could not read a username, GitHub refused PYTACHECK_READ_TOKEN: it may have expired, be awaiting approval by a scienceverse owner, or lack Contents: read on scienceverse/pytacheck"
+            fi
+            exit 1
+          }
       - name: Check the store
         run: pytacheck store build . --check --repo "$GITHUB_REPOSITORY"
       - name: Check changed packs
@@ -140,10 +154,17 @@ jobs:
             auth=$(printf 'x-access-token:%s' "$PYTACHECK_READ_TOKEN" | base64 -w0)
             echo "::add-mask::$auth"
             export GIT_CONFIG_COUNT=1
-            export GIT_CONFIG_KEY_0=http.https://github.com/thesanogoeffect/pytacheck.extraheader
+            export GIT_CONFIG_KEY_0=http.https://github.com/scienceverse/pytacheck.extraheader
             export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth"
           fi
-          uv tool install "$PYTACHECK_SPEC"
+          uv tool install "$PYTACHECK_SPEC" || {
+            if [ -z "$PYTACHECK_READ_TOKEN" ]; then
+              echo "::error::installing pytacheck failed, and the PYTACHECK_READ_TOKEN secret is not set: CI needs it while pytacheck's repository is private (see the comment above PYTACHECK_SPEC in this workflow)"
+            else
+              echo "::error::installing pytacheck failed. If git could not read a username, GitHub refused PYTACHECK_READ_TOKEN: it may have expired, be awaiting approval by a scienceverse owner, or lack Contents: read on scienceverse/pytacheck"
+            fi
+            exit 1
+          }
       - name: Build index.json
         run: pytacheck store build . --repo "$GITHUB_REPOSITORY"
       - name: Commit index.json
