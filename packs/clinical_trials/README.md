@@ -1,6 +1,6 @@
 # clinical_trials
 
-Checks for clinical trial reports, as a [pytacheck](https://github.com/thesanogoeffect/pytacheck) pack.
+Checks for clinical trial reports, as a [pytacheck](https://github.com/scienceverse/pytacheck) pack.
 
 | module | section | what it does |
 |---|---|---|

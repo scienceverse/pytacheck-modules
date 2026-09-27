@@ -6,7 +6,7 @@
   "description": "Checks for clinical trial reports: finds trial registration numbers from the major registries and flags trials that report none.",
   "authors": ["pytacheck-modules contributors"],
   "license": "MIT",
-  "homepage": "https://github.com/thesanogoeffect/pytacheck-modules/tree/main/packs/clinical_trials",
+  "homepage": "https://github.com/scienceverse/pytacheck-modules/tree/main/packs/clinical_trials",
   "fields": ["medicine"],
   "keywords": ["clinical trials", "trial registration", "CONSORT", "ICMJE"],
   "requires": {"pytacheck": ">=0.3"},

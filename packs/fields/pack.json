@@ -6,7 +6,7 @@
   "description": "Presets that pick metacheck's built-in checks for a field of research. No code: only module lists.",
   "authors": ["pytacheck-modules contributors"],
   "license": "CC0-1.0",
-  "homepage": "https://github.com/thesanogoeffect/pytacheck-modules/tree/main/packs/fields",
+  "homepage": "https://github.com/scienceverse/pytacheck-modules/tree/main/packs/fields",
   "fields": ["general", "psychology", "medicine"],
   "keywords": ["presets", "fields", "open science"],
   "requires": {"pytacheck": ">=0.3"},
