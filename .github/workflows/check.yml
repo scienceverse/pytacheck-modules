@@ -66,6 +66,10 @@ jobs:
       - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           python-version: "3.12"
+          # No uv cache: the store has no lock or requirements file to key it
+          # on, so a hosted runner's default cache would warn on every run and
+          # keep one entry that never changes.
+          enable-cache: false
           # Tools in the job's temp dir: the pack tests below run the pytest
           # installed next to pytacheck, at $UV_TOOL_DIR.
           tool-dir: ${{ runner.temp }}/uv-tools
@@ -136,7 +140,8 @@ jobs:
       - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           python-version: "3.12"
-          # see the check job
+          # same settings as the check job
+          enable-cache: false
           tool-dir: ${{ runner.temp }}/uv-tools
           tool-bin-dir: ${{ runner.temp }}/uv-tool-bin
       - name: Keep pytacheck's state inside this job
