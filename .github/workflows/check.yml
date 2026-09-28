@@ -32,11 +32,14 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
-  # pytacheck is not on PyPI yet, so CI installs its development branch.
-  # Switch to "pytacheck" once it is released.
+  # pytacheck is not on PyPI yet, so CI installs its development branch: the
+  # head of scienceverse/pytacheck#1, whose base (main) holds only the initial
+  # commit. Switch to @main once that pull request merges (README.md and
+  # CONTRIBUTING.md name the same branch), and to "pytacheck" once it is
+  # released.
   # Its canonical URL, not the redirect from thesanogoeffect/pytacheck: that
   # stops the day a repository of that name exists again (a fork, say).
-  PYTACHECK_SPEC: "pytacheck @ git+https://github.com/scienceverse/pytacheck@claude/pytacheck-metacheck-fork-0x7q73"
+  PYTACHECK_SPEC: "pytacheck @ git+https://github.com/scienceverse/pytacheck@claude/elegant-fermat-eo7s89"
   PYTACHECK_CONFIG: none # ignore any user config: CI sees only the store
   # While pytacheck's repository is private, CI needs a token that can read it:
   # a fine-grained PAT with resource owner scienceverse and "Contents: read" on
