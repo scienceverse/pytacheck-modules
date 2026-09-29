@@ -5,7 +5,8 @@
 # checking a pack runs its code and tests, and that must not happen before a
 # maintainer has read it. A pack sent from a fork gets no CI run here: check it
 # locally, or push it to a branch of this repository. No secret reaches the
-# pack's code: the workflow reads no secret except the automatic GITHUB_TOKEN.
+# pack's code: the check job reads no secret, and its checkout does not keep the
+# automatic GITHUB_TOKEN (persist-credentials: false).
 #
 # A hosted runner is new for every job, so nothing carries over between runs.
 # uv's tools and pytacheck's cache and data live in the job's RUNNER_TEMP.
