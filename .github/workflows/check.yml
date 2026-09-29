@@ -28,11 +28,12 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
-  # pytacheck is not on PyPI yet, so CI installs its main branch (README.md and
-  # CONTRIBUTING.md name the same). Switch to "pytacheck" once it is released.
+  # CI installs pytacheck's main branch, so a change there shows here at once.
+  # The URL has no package name: the distribution on main is metacheck from
+  # 0.4.0a1 on (it was pytacheck before), and uv reads the name from the source.
   # Its canonical URL, not the redirect from thesanogoeffect/pytacheck: that
   # stops the day a repository of that name exists again (a fork, say).
-  PYTACHECK_SPEC: "pytacheck @ git+https://github.com/scienceverse/pytacheck@main"
+  PYTACHECK_SPEC: "git+https://github.com/scienceverse/pytacheck@main"
   PYTACHECK_CONFIG: none # ignore any user config: CI sees only the store
 
 jobs:
@@ -80,13 +81,16 @@ jobs:
           BASE: ${{ github.event.pull_request.base.sha }}
         run: |
           status=0
+          # the tool is named after the distribution: metacheck, or pytacheck before 0.4.0a1
+          tool_env="$UV_TOOL_DIR/metacheck"
+          [ -d "$tool_env" ] || tool_env="$UV_TOOL_DIR/pytacheck"
           changed=$(git diff --name-only "$BASE"...HEAD -- packs/ | cut -d/ -f2 | sed 's/\.json$//' | sort -u)
           for name in $changed; do
             if [ -d "packs/$name" ]; then
               echo "::group::pytacheck pack check packs/$name"
               pytacheck pack check "packs/$name" || status=1
               if [ -d "packs/$name/tests" ]; then
-                (cd "packs/$name" && "$UV_TOOL_DIR/pytacheck/bin/pytest" -q tests) || status=1
+                (cd "packs/$name" && "$tool_env/bin/pytest" -q tests) || status=1
               fi
               echo "::endgroup::"
             elif [ -f "packs/$name.json" ]; then
