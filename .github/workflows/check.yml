@@ -1,19 +1,16 @@
 # Store CI: check pull requests; on main, rebuild index.json and commit it.
 #
-# Runs only on the self-hosted fridge runner registered on this repository
-# (label pytacheck-modules-fridge-ci); there is no GitHub-hosted fallback. PR
-# runs are for branches of THIS repository only: fork PRs are refused by the
-# check job's `if`, because checking a pack runs its code and tests, and that
-# must not happen on the runner before a maintainer has read it. A pack sent
-# from a fork gets no CI run here: check it locally, or push it to a branch of
-# this repository.
+# Runs on GitHub-hosted runners (ubuntu-latest). PR runs are for branches of
+# THIS repository only: fork PRs are refused by the check job's `if`, because
+# checking a pack runs its code and tests, and that must not happen before a
+# maintainer has read it. A pack sent from a fork gets no CI run here: check it
+# locally, or push it to a branch of this repository. No secret is passed to
+# the pack's code: the one secret, the token for pytacheck's repository, reaches
+# git only through the environment of the one step per job that fetches
+# pytacheck.
 #
-# The runner keeps its state between jobs (workspace, home directory, caches),
-# so nothing here writes the runner user's global config: the token for
-# pytacheck's repository reaches git only through the environment of the one
-# step per job that fetches pytacheck, and uv's tools and pytacheck's cache and
-# data live in the job's RUNNER_TEMP, which is emptied before and after every
-# job. (uv's download cache and its Pythons stay in the runner user's home.)
+# A hosted runner is new for every job, so nothing carries over between runs.
+# uv's tools and pytacheck's cache and data live in the job's RUNNER_TEMP.
 name: store
 
 on:
@@ -25,8 +22,8 @@ on:
 permissions:
   contents: read
 
-# One run per ref on the runner: a newer push supersedes an in-flight PR run;
-# runs on main queue instead, since the index job pushes to main.
+# One run per ref: a newer push supersedes an in-flight PR run; runs on main
+# queue instead, since the index job pushes to main.
 concurrency:
   group: store-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -59,7 +56,7 @@ jobs:
     if: >-
       github.event_name == 'pull_request' &&
       github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: [self-hosted, Linux, X64, pytacheck-modules-fridge-ci]
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6.0.2
@@ -69,13 +66,17 @@ jobs:
       - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           python-version: "3.12"
-          # Tools in the job's temp dir, not ~/.local: that outlives the job and
-          # is shared with every other job run by the runner's user.
+          # No uv cache: the store has no lock or requirements file to key it
+          # on, so a hosted runner's default cache would warn on every run and
+          # keep one entry that never changes.
+          enable-cache: false
+          # Tools in the job's temp dir: the pack tests below run the pytest
+          # installed next to pytacheck, at $UV_TOOL_DIR.
           tool-dir: ${{ runner.temp }}/uv-tools
           tool-bin-dir: ${{ runner.temp }}/uv-tool-bin
       - name: Keep pytacheck's state inside this job
-        # installed packs and cached store indexes would otherwise carry over
-        # between runs in the runner user's ~/.cache and ~/.local/share
+        # installed packs and cached store indexes stay out of ~/.cache and
+        # ~/.local/share
         run: |
           echo "PYTACHECK_CACHE_DIR=$RUNNER_TEMP/pytacheck-cache" >> "$GITHUB_ENV"
           echo "PYTACHECK_DATA_DIR=$RUNNER_TEMP/pytacheck-data" >> "$GITHUB_ENV"
@@ -128,7 +129,7 @@ jobs:
 
   index:
     if: github.event_name != 'pull_request'
-    runs-on: [self-hosted, Linux, X64, pytacheck-modules-fridge-ci]
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
       contents: write
@@ -139,7 +140,8 @@ jobs:
       - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           python-version: "3.12"
-          # see the check job
+          # same settings as the check job
+          enable-cache: false
           tool-dir: ${{ runner.temp }}/uv-tools
           tool-bin-dir: ${{ runner.temp }}/uv-tool-bin
       - name: Keep pytacheck's state inside this job
