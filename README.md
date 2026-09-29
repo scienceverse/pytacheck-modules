@@ -36,13 +36,6 @@ pytacheck run paper.json -m clinical_trials::trial_registration
 The full user guide is pytacheck's
 [docs/MODULES.md](https://github.com/scienceverse/pytacheck/blob/main/docs/MODULES.md).
 
-> **While this store is private**, pytacheck needs read access to it: set
-> `PYTACHECK_GITHUB_TOKEN` (or `GH_TOKEN` / `GITHUB_TOKEN`) to a GitHub token that
-> can read this repository, for example
-> `export PYTACHECK_GITHUB_TOKEN=$(gh auth token)`, or configure git credentials
-> for github.com (for example `gh auth setup-git`). The token is sent only to
-> GitHub and is never written to your config, install records or run records.
-
 ## What "reviewed" means
 
 Maintainers read every pack before it is listed as reviewed, using the
