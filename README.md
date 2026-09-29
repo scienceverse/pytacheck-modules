@@ -13,7 +13,7 @@ nothing here runs until you install a pack.
 ## Browse and install
 
 ```bash
-pip install "pytacheck @ git+https://github.com/scienceverse/pytacheck@main"   # not on PyPI yet
+pip install "git+https://github.com/scienceverse/pytacheck@main"   # the newest version
 pytacheck pack search                       # everything in the store
 pytacheck pack search trial --field medicine
 pytacheck pack show clinical_trials         # details, without running any code

@@ -6,7 +6,7 @@ It can hold presets only (lists of existing checks, no code) or new checks.
 ## 1. Make the pack
 
 ```bash
-pip install "pytacheck @ git+https://github.com/scienceverse/pytacheck@main"   # not on PyPI yet
+pip install "git+https://github.com/scienceverse/pytacheck@main"   # the newest version
 pytacheck pack new my-pack          # a working example with a test and a workflow
 pytacheck pack install ./my-pack    # use it live while you develop
 pytacheck pack check ./my-pack      # the same checks this store's CI runs
